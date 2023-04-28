@@ -1,5 +1,5 @@
 const { getContacts, getContactById, createContact, deleteContact, updateContactById, updateFavorite } = require("./contacts-controller");
-const { userLogin, userRegister, userLogOut, userCurrent } = require("./users-controller");
+const { userLogin, userRegister, userLogOut, userCurrent, updateAvatar } = require("./users-controller");
 
 
 module.exports = {
@@ -12,5 +12,6 @@ module.exports = {
     updateContactById,
     updateFavorite,
     userLogOut,
-    userCurrent
+    userCurrent,
+    updateAvatar
 }

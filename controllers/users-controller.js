@@ -2,10 +2,11 @@ const crypto = require('crypto')
 const { UserModel } = require("../database/models/user.models")
 const { createHash, checkHash, createJWT } = require("../services")
 const { registrationSchema, loginSchema } = require('../shemas')
-const jwt = require('jsonwebtoken')
+const gravatar = require('gravatar');
 require('dotenv').config()
-
-const {JWT_SECRET} = process.env
+const path = require('path')
+const fsp = require('fs/promises')
+const Jimp = require('jimp')
 
 const userRegister = async (req, res, next) => {
     const { email, password } = req.body
@@ -21,8 +22,9 @@ const userRegister = async (req, res, next) => {
             if (existingUser) {
                 res.status(409).json({ message: "Email in use" })
             } else {
+                const avatarURL = gravatar.url(email, {protocol: 'https'} )
                 const passwordHash = await createHash(password)
-                const newUser = await UserModel.create({ password: passwordHash, email })
+                const newUser = await UserModel.create({ password: passwordHash, email, avatarURL })
                 res.status(201).json({ user: { email: newUser.email, subscription: newUser.subscription } })
             }
         }
@@ -98,9 +100,40 @@ const userCurrent = async (req, res, next) => {
     }
 }
 
+const newPath = path.join('/Users/sergey/Desktop/Projects/React/nodejs-02/public', 'avatars')
+
+const updateAvatar = async (req, res, next) => {
+    try {
+        const { _id, email }  = req.user
+        console.log(req.user)
+        const file = req.file
+        const filePath = path.join(newPath, `${email}.jpg`)
+
+        Jimp.read(file.path)
+            .then((image) => {
+            return image.resize(250, 250 )
+            })
+            .then((image) => {
+            return image.writeAsync(filePath)   
+            })
+        // await fsp.rename(file.path, filePath)
+        const avatarURL = `http://localhost:3000/avatars/${email}.jpg`
+        const updatedUser = await UserModel.findByIdAndUpdate(_id, {avatarURL})
+    
+        if (updatedUser) {
+        res.status(200).json({ avatarURL: avatarURL })
+    }   else {
+        res.status(404).json({ message: "Not authorized" })
+    }
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports = {
     userRegister,
     userLogin,
     userLogOut,
-    userCurrent
+    userCurrent,
+    updateAvatar
 }
