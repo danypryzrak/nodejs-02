@@ -1,23 +1,19 @@
-const jwt = require("jsonwebtoken")
-require('dotenv').config()
-const { JWT_SECRET } = process.env
+const jwt = require("jsonwebtoken");
 
-function createJWT(payload) {
-    const token = jwt.sign(
-        payload,
-        JWT_SECRET,
-        {
-            expiresIn: "1h"}
-    )
-    
-    return token
-}
+const { JWT_SECRET, JWT_EXPIRES_IN_SECONDS } = process.env;
 
-function verifyJWT(token) {
-    return jwt.verify(token, JWT_SECRET)
-}
+const createJWT = (payload) => {
+  const token = jwt.sign(payload, JWT_SECRET, {
+    expiresIn: `${JWT_EXPIRES_IN_SECONDS}s`,
+  });
+  return token;
+};
+
+const veryfyJWT = (token) => {
+  return jwt.verify(token, JWT_SECRET);
+};
 
 module.exports = {
-    createJWT,
-    verifyJWT
-}
+  createJWT,
+  veryfyJWT,
+};
