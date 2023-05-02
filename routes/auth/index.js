@@ -34,6 +34,7 @@ router.patch(
   controllerWrapper(authController.updateUserSubscription)
 );
 
+
 router.patch(
   "/avatars",
   userAuthMiddleware,
