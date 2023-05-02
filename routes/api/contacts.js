@@ -1,21 +1,44 @@
-const { json } = require('express')
-const express = require('express')
-const { getContacts, getContactById, createContact, deleteContact, updateContactById, updateFavorite } = require('../../controllers')
-const { userAuthMiddleware } = require('../../middlewares')
+const express = require("express");
+const contactsController = require("../../controllers/contacts");
+const { userAuthMiddleware } = require("../../middlewares");
+const { controllerWrapper } = require("../../services");
 
-const router = express.Router()
+const router = express.Router();
 
+router.get(
+  "/",
+  userAuthMiddleware,
+  controllerWrapper(contactsController.getContacts)
+);
 
-router.get('/', getContacts)
+router.get(
+  "/:id",
+  userAuthMiddleware,
+  controllerWrapper(contactsController.getContact)
+);
 
-router.get('/:contactId', getContactById)
+router.post(
+  "/",
+  userAuthMiddleware,
+  controllerWrapper(contactsController.createContact)
+);
 
-router.post('/', userAuthMiddleware, createContact)
+router.delete(
+  "/:id",
+  userAuthMiddleware,
+  controllerWrapper(contactsController.deleteContact)
+);
 
-router.delete('/:contactId', userAuthMiddleware, deleteContact)
+router.put(
+  "/:id",
+  userAuthMiddleware,
+  controllerWrapper(contactsController.updateOneContact)
+);
 
-router.put('/:contactId', userAuthMiddleware, updateContactById)
+router.patch(
+  "/:id/favorite",
+  userAuthMiddleware,
+  controllerWrapper(contactsController.updateStatusContact)
+);
 
-router.patch('/:contactId/favorite', userAuthMiddleware, updateFavorite)
-
-module.exports = router
+module.exports = router;

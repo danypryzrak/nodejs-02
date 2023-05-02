@@ -1,16 +1,18 @@
-const { mapBookOutput } = require("./book-mapping.service");
+const { mapContactOutput } = require("./contact-mapping.service");
+const { createHash } = require("./hashing.service");
 const { createHttpException } = require("./create-http-exception.service");
-const { createHash, checkHash } = require("./hashing.service");
-const { createJWT, verifyJWT } = require("./jwt.service");
+const { checkHash } = require("./hashing.service");
+const { createJWT, veryfyJWT } = require("./jwt.service");
+const { controllerWrapper } = require("./controller-wrapper.service");
+const { sendEmail } = require("./sendEmail.service");
 
 module.exports = {
-    mapBookOutput,
-    createHttpException,
-    createHash,
-    checkHash,
-    createJWT,
-    verifyJWT
-}
-
-
-
+  mapContactOutput,
+  createHash,
+  createHttpException,
+  checkHash,
+  createJWT,
+  veryfyJWT,
+  controllerWrapper,
+  sendEmail,
+};
